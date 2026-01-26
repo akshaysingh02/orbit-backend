@@ -42,7 +42,7 @@ model Project {
   updatedAt DateTime @default(now())
 
   // Relations: links to the User model
-  admin User @relation(fields: [adminId], references: [id])
+  admin User @relation(fields: [adminId], references: [id], onDelete: Restrict) //force re-assignment on user deletion
 
 
   tasks Task[] // A project can have multiple tasks
@@ -61,7 +61,7 @@ model Task{
   updatedAt DateTime @default(now())
 
   //Relations
-  parentProject Project @relation(fields: [projectId], references: [id])
+  parentProject Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
   assignedToUser User? @relation("TaskAssignedTo",fields: [assignedToId],references: [id])
 
   subTasks SubTask[]
@@ -90,7 +90,7 @@ model SubTask {
   updatedAt DateTime @default(now())
 
   //Relations
-  parentTask Task @relation(fields: [taskId],references: [id])
+  parentTask Task @relation(fields: [taskId],references: [id], onDelete: Cascade)
 }
 
 model Comment {
@@ -103,7 +103,7 @@ model Comment {
   updatedAt DateTime @default(now())
 
   // Relations
-  parentTask Task @relation(fields: [taskId],references: [id])
+  parentTask Task @relation(fields: [taskId],references: [id], onDelete: Cascade)
   author User @relation(fields: [userId],references: [id])
 }
 
