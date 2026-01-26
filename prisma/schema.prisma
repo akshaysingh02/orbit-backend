@@ -62,7 +62,7 @@ model Task{
 
   //Relations
   parentProject Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  assignedToUser User? @relation("TaskAssignedTo",fields: [assignedToId],references: [id])
+  assignedToUser User? @relation("TaskAssignedTo",fields: [assignedToId],references: [id],onDelete: SetNull)
 
   subTasks SubTask[]
   comments Comment[]
@@ -96,7 +96,7 @@ model SubTask {
 model Comment {
   id String @id @default(uuid())
   body String
-  userId String // Foreign key: stores commenter's id
+  userId String? // Foreign key: stores commenter's id
   taskId String // Foreign key: stores parent task's id
 
   createdAt DateTime @default(now())
@@ -104,7 +104,7 @@ model Comment {
 
   // Relations
   parentTask Task @relation(fields: [taskId],references: [id], onDelete: Cascade)
-  author User @relation(fields: [userId],references: [id])
+  author User? @relation(fields: [userId],references: [id], onDelete: SetNull)
 }
 
 
