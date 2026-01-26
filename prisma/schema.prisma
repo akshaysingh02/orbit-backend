@@ -1,0 +1,138 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id String @id @default(uuid())
+  username String @unique
+  name String 
+  email String @unique
+  password String 
+  bio String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+  
+  // Relations 
+  projects Project[] // A user can be admin of multiple projects
+  assignedTasks Task[]@relation("TaskAssignedTo") // A user can have multiple tasks
+  comments Comment[] // A user can comment multiple times
+  // mediaUploaded Media[] // A user can upload miltiple media files
+}
+
+model Project {
+  id String @id @default(uuid())
+  title String 
+  description String 
+  adminId String // Foreign key: stores the User's ID
+  startDate DateTime @default(now())
+  endDate DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  // Relations: links to the User model
+  admin User @relation(fields: [adminId], references: [id])
+
+
+  tasks Task[] // A project can have multiple tasks
+}
+
+model Task{
+  id String @id @default(uuid())
+  title String 
+  description String
+  projectId String // Foreign key: stores parent project's id
+  dueDate DateTime?
+  status TaskStatus @default(TODO)
+  assignedToId String? // Foreign key: stores user id of whom task is assigned
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  //Relations
+  parentProject Project @relation(fields: [projectId], references: [id])
+  assignedToUser User? @relation("TaskAssignedTo",fields: [assignedToId],references: [id])
+
+  subTasks SubTask[]
+  comments Comment[]
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  DEV_DONE
+  STAGING_TEST
+  PRODUCTION_READY
+  PRODUCTION_REVIEW
+  DONE
+  REMOVED
+}
+
+model SubTask {
+  id String @id @default(uuid())
+  title String?
+  description String
+  isCompleted Boolean
+  taskId String // Foreign key: stores parent task's id
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  //Relations
+  parentTask Task @relation(fields: [taskId],references: [id])
+}
+
+model Comment {
+  id String @id @default(uuid())
+  body String
+  userId String // Foreign key: stores commenter's id
+  taskId String // Foreign key: stores parent task's id
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  // Relations
+  parentTask Task @relation(fields: [taskId],references: [id])
+  author User @relation(fields: [userId],references: [id])
+}
+
+
+/// TODO: Media model - will design after frontend decisions
+// model Media {
+//   id String @id @default(uuid())
+//   mediaUrl String
+//   mediaType MediaTypes
+//   userId String
+//   mediaUnder MediaUnder
+//   taskId String?
+//   subTaskId String?
+//   commentId String?
+
+//   createdAt DateTime @default(now())
+//   updatedAt DateTime @default(now())
+
+//   //Relations
+//   uploadedBy User @relation(fields: [userId],references: [id])
+// }
+
+// enum MediaUnder {
+//   COMMENT
+//   TASK
+//   SUBTASK
+// }
+
+// enum MediaTypes {
+//   IMAGE
+//   VIDEO
+// }
