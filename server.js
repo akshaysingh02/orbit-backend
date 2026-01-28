@@ -9,12 +9,23 @@ const app = express();
 dotenv.config();
 connectDb();
 
-app.use("/api/auth",authRoutes)
+// Body parsing middlewares
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
+
+
+
+// Api routes
+app.use("/auth",authRoutes)
+
+
+
+
+
 
 app.listen(process.env.PORT_DEV,()=>{
     console.log(`Server is running at port ${process.env.PORT_DEV}`)
 })
-
 
 //handle unhandled promise rejections (eg. database connection errors)
 process.on("unhandledRejection", async(err)=>{

@@ -26,8 +26,8 @@ model User {
   // Relations 
   projects Project[] // A user can be admin of multiple projects
   assignedTasks Task[]@relation("TaskAssignedTo") // A user can have multiple tasks
-  comments Comment[] // A user can comment multiple times
-  // mediaUploaded Media[] // A user can upload miltiple media files
+  comments Comment[] @relation("commentAuthor") // A user can comment multiple times
+  // mediaUploaded Media[] // A user can upload miltiple media files (will be build on the later iterations)
 }
 
 model Project {
@@ -104,7 +104,7 @@ model Comment {
 
   // Relations
   parentTask Task @relation(fields: [taskId],references: [id], onDelete: Cascade)
-  author User? @relation(fields: [userId],references: [id], onDelete: SetNull)
+  author User? @relation("commentAuthor",fields: [userId],references: [id], onDelete: SetNull)
 }
 
 

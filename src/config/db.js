@@ -1,6 +1,11 @@
 import {PrismaClient} from "@prisma/client";
+import dotenv from 'dotenv';
+import { PrismaNeon } from "@prisma/adapter-neon";
+dotenv.config()
 
-const primsa = new PrismaClient({
+const adapter = new PrismaNeon({connectionString: process.env.DATABASE_URL})
+const prisma = new PrismaClient({
+    adapter,
     log: process.env.NODE_ENV === "development" ? ["query","error", "warn"] : 
     ["error"],
 });
@@ -24,4 +29,4 @@ const disconnectDb = async () => {
     }
 }
 
-export {connectDb,disconnectDb, primsa}
+export {connectDb,disconnectDb, prisma}
