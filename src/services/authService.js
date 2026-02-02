@@ -1,9 +1,10 @@
 import { prisma } from "../../src/config/db.js";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../utils/generateToken.js";
+import { successResponse } from "../utils/response.js";
 
 
-export const createUser = async ({ username, name, email, password }) => {
+export const createUser = async ({ username, name, email, password,bio }) => {
 
     //check if user already exists
     const existingUser = await prisma.user.findFirst({
@@ -24,6 +25,7 @@ export const createUser = async ({ username, name, email, password }) => {
             name,
             email,
             password: hashedPassword,
+            bio
         }
     })
 
@@ -69,6 +71,45 @@ export const getUserProfile = async (userId) => {
     return { id: user.id, email: user.email, name: user.name, bio: user.bio, username: user.username }
 }
 
-export const updateUserProfile = async () => {
+export const updateUserProfile = async ({name,username,email,password,bio,userId}) => {
+    //check if email is already in use
+    if(email){
+        const isExistingUser = await prisma.user.findUnique({
+            where: {email: email, NOT: {id: userId}}
+        })
+        if(isExistingUser){
+            throw new Error("Email is already in use")
+        }
+    }
 
+    //check if username is alrady in use
+    if(username){
+        const isExistingUsername = await prisma.user.findUnique({
+            where:{username:username, NOT: {id: userId}}
+        })
+        if(isExistingUsername){
+            throw new Error("This username is already taken")
+        }
+    }
+
+    //create the update object
+    const updateData = {}
+    if(name) updateData.name = name
+    if(email) updateData.email = email
+    if(username) updateData.username = username
+    if(bio) updateData.bio = bio
+
+    //hash the password if given
+    if(password){
+        const hashedPassword = await bcrypt.hash(password,10)
+        updateData.password = hashedPassword
+    }
+
+    const updatedProfile = await prisma.user.update({
+        where: {id: userId},
+        data: updateData,
+        omit: { password: true}
+    })
+
+    return updatedProfile
 }

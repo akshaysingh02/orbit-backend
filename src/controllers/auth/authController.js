@@ -8,9 +8,9 @@ const DAY = 24 * HOUR;
 
 export const register = async (req,res) =>{
     try {
-        const {username, name, email, password} = req.body;
+        const {username, name, email, password,bio} = req.body;
         
-        const userData = await createUser({username,name,email,password})
+        const userData = await createUser({username,name,email,password,bio})
 
         res.cookie("jwt", userData.token, {
             httpOnly: true,
@@ -78,10 +78,11 @@ export const getProfile = async(req,res)=>{
 
 export const updateProfile = async(req,res) => {
     try {
-        const {name, username,email,password} = req.body;
-        const userData = await updateUserProfile({name,username,email,password});
+        const {name,bio,username,email,password} = req.body;
+        const userId = req.user?.id;
+        const userData = await updateUserProfile({name,bio,username,email,password,userId});
 
-        successResponse(res,userData,"User profile updated",200)
+        return successResponse(res,userData,"User profile updated",200)
     } catch (error) {
         return errorResponse(res,error.message, 500,error)
     }
