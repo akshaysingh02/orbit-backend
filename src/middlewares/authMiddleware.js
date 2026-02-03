@@ -15,7 +15,7 @@ export const authMiddleware = async (req,res,next) => {
         token = req.cookies.jwt;
     }
     if(!token){
-        errorResponse(res,"Not Authorized: Token not found",404)
+        return errorResponse(res,"Not Authorized: Token not found",404)
     }
 
     //verify token and extract user id
@@ -28,14 +28,14 @@ export const authMiddleware = async (req,res,next) => {
         })
 
         if(!user){
-            errorResponse(res,"User not found", 404)
+            return errorResponse(res,"User not found", 404)
         }
 
         req.user = user
 
         next()
     } catch (error) {
-        errorResponse(res,"Authorization error",401,error)
+        return errorResponse(res,"Authorization error",401,error)
     }
 
 }
