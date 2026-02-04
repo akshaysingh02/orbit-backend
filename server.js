@@ -1,7 +1,8 @@
 import express from "express"
 import dotenv from "dotenv"
-import authRoutes from "./src/routes/authRoute.js";
-import userRoutes from "./src/routes/userRoute.js"
+import authRoutes from "./src/routes/authRoutes.js";
+import userRoutes from "./src/routes/userRoutes.js";
+import projectRoutes from "./src/routes/projectRoutes.js"
 import { connectDb, disconnectDb } from "./src/config/db.js";
 
 
@@ -19,7 +20,7 @@ app.use(express.urlencoded({extended: true}))
 // Api routes
 app.use("/auth",authRoutes) 
 app.use("/users",userRoutes)
-
+app.use("/project",projectRoutes)
 
 
 

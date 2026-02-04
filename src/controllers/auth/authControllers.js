@@ -1,4 +1,4 @@
-import { createUser, getUserProfile, loginUser,updateUserProfile } from "../../services/authService.js";
+import { createUser, getUserProfile, loginUser,updateUserProfile } from "../../services/authServices.js";
 import { errorResponse, successResponse } from "../../utils/response.js";
 
 const SECOND = 1000;

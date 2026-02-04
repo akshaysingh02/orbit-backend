@@ -1,4 +1,4 @@
-import { getUser, getUserList } from "../../services/userService.js"
+import { getUser, getUserList } from "../../services/userServices.js"
 import { errorResponse, successResponse } from "../../utils/response.js";
 
 export const userList = async(req, res) => {
