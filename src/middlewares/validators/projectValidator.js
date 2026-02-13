@@ -13,12 +13,12 @@ export const validateCreateProject = [
     .isLength({max: 2000}).withMessage("Description length can't exceed 2000 characters"),
 
     body("startDate")
-    .isDate()
-    .optional(),
+    .optional({ values: "falsy" })
+    .isDate().withMessage("Start date must be a valid date"),
 
     body("endDate")
-    .isDate()
-    .optional(),
+    .optional({ values: "falsy" })
+    .isDate().withMessage("End date must be a valid date"),
 
     (req,res,next)=>{
         const error = validationResult(req)
@@ -43,14 +43,12 @@ export const validateUpdateProject = [
     .isLength({max: 2000}).withMessage("Description length can't exceed 2000 characters"),
 
     body("startDate")
-    .optional()
-    .isDate()
-    .optional(),
+    .optional({ values: "falsy" })
+    .isDate().withMessage("Start date must be a valid date"),
 
     body("endDate")
-    .optional()
-    .isDate()
-    .optional(),
+    .optional({ values: "falsy" })
+    .isDate().withMessage("End date must be a valid date"),
 
     body("adminId")
     .optional()

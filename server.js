@@ -3,6 +3,7 @@ import dotenv from "dotenv"
 import authRoutes from "./src/routes/authRoutes.js";
 import userRoutes from "./src/routes/userRoutes.js";
 import projectRoutes from "./src/routes/projectRoutes.js"
+import taskRoutes from "./src/routes/taskRoutes.js"
 import { connectDb, disconnectDb } from "./src/config/db.js";
 
 
@@ -21,7 +22,7 @@ app.use(express.urlencoded({extended: true}))
 app.use("/auth",authRoutes) 
 app.use("/users",userRoutes)
 app.use("/project",projectRoutes)
-
+app.use("/task",taskRoutes)
 
 
 const server = app.listen(process.env.PORT_DEV,()=>{

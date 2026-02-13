@@ -3,7 +3,7 @@ import { errorResponse } from "../../utils/response.js"
 
 export const validateUuidParam = [
     param("id")
-    .optional()
+    .optional({values: "falsy"})
     .isUUID().withMessage("Invalid Id format"),
 
     (req,res,next) => {
