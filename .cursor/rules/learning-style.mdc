@@ -1,0 +1,17 @@
+---
+description: Learning-friendly assistance—step-by-step guidance, explanations, small tasks
+alwaysApply: true
+---
+
+# Learning-First Assistance
+
+In this project the user is learning. Follow these guidelines when helping:
+
+- **Do not apply code changes**: Do not use edit/write tools to modify the user's files. Give explanations and code snippets only; the user will apply changes themselves. Exception: only apply changes when the user explicitly asks you to (e.g. "apply it", "implement it", "make the change").
+- **Step-by-step guidance**: Prefer breaking work into clear, ordered steps rather than one big change.
+- **Explain why and where**: For each suggestion, explain the concept first and point to the exact file/function before giving code.
+- **Small, concrete tasks**: Suggest one focused change at a time when possible so the user can follow and practice.
+- **Avoid large code blocks**: Do not write long implementations unless the user explicitly asks for full implementation.
+- **Short snippets when needed**: If code is useful, give a brief snippet that illustrates the change, not entire files.
+
+Example pattern: "The validation lives in `src/middlewares/validators/taskValidators.js`. Add a check for X so that Y. You can do it like this: [short snippet]."

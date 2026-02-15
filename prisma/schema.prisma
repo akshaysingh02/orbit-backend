@@ -27,6 +27,7 @@ model User {
   projects Project[] // A user can be admin of multiple projects
   assignedTasks Task[]@relation("TaskAssignedTo") // A user can have multiple tasks
   comments Comment[] @relation("commentAuthor") // A user can comment multiple times
+  projectMemberships Project_member[] @relation("ProjectMembers")
   // mediaUploaded Media[] // A user can upload miltiple media files (will be build on the later iterations)
 }
 
@@ -43,9 +44,29 @@ model Project {
 
   // Relations: links to the User model
   admin User @relation(fields: [adminId], references: [id], onDelete: Restrict) //force re-assignment on user deletion
-
-
   tasks Task[] // A project can have multiple tasks
+  members Project_member[]
+}
+
+model Project_member {
+  id String @id @default(uuid())
+  @@unique([projectId,userId])
+  projectId String
+  userId String
+  role Roles
+
+  joinedAt DateTime @default(now())
+  updatedAt DateTime @default(now())
+
+  // Relations
+  project Project @relation(fields: [projectId],references: [id], onDelete: Cascade)
+  user User @relation("ProjectMembers",fields: [userId],references: [id],onDelete: Cascade)
+}
+
+enum Roles{
+  ADMIN
+  MEMBER
+  VIEWER
 }
 
 model Task{

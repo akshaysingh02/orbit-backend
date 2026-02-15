@@ -14,8 +14,8 @@ export const newProject = async (req, res) => {
 
 export const getAllProjects = async (req, res) => {
     try {
-        const adminId = req.user?.id
-        const projectList = await getProjectList({ adminId })
+        const userId = req.user?.id
+        const projectList = await getProjectList({ userId })
         return successResponse(res, projectList, "Projects fetched successfully", 200)
     } catch (error) {
         const status = error.message?.includes("user's id") ? 401 : 500

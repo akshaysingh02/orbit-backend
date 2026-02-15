@@ -2,8 +2,11 @@ import express from "express"
 import { validateCreateTask, validateTaskStatus, validateUpdateTask } from "../middlewares/validators/taskValidators.js"
 import { assignTask, createNewTask, deleteTask, getTasksForProject, getTaskWithSubTask, updateTask, updateTaskStatus } from "../controllers/task/taskControllers.js"
 import { validateUuidParam } from "../middlewares/validators/generalValidators.js"
+import { authMiddleware } from "../middlewares/authMiddleware.js"
 
 const router = express.Router()
+
+router.use(authMiddleware)
 
 router.get("/projects/:id",validateUuidParam,getTasksForProject)
 router.post("/projects/:id",validateUuidParam,validateCreateTask,createNewTask)

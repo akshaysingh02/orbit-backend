@@ -24,6 +24,7 @@ export const validateCreateTask = [
 
     body("status")
     .trim()
+    .optional()
     .isIn(TASK_STATUS_VALUES)
     .withMessage(`Status must be one of: ${TASK_STATUS_VALUES.join(", ")}`),
 
