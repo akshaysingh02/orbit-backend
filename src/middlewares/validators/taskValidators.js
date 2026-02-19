@@ -1,4 +1,5 @@
 import { body,validationResult } from "express-validator";
+import { errorResponse } from "../../utils/response.js";
 
 const TASK_STATUS_VALUES = ["TODO", "IN_PROGRESS", "DEV_DONE", "STAGING_TEST", "PRODUCTION_READY", "PRODUCTION_REVIEW", "DONE", "REMOVED"];
 export const validateCreateTask = [
@@ -57,7 +58,6 @@ export const validateUpdateTask = [
 
     body("projectId")
     .trim()
-    .optional()
     .notEmpty().withMessage("Project Id is required")
     .isUUID().withMessage("Project Id must be valid"),
 
@@ -90,9 +90,30 @@ export const validateUpdateTask = [
 export const validateTaskStatus = [
     body("status")
     .trim()
-    .optional()
+    .notEmpty().withMessage("Status is required")
     .isIn(TASK_STATUS_VALUES)
     .withMessage(`Status must be one of: ${TASK_STATUS_VALUES.join(", ")}`),
+
+    (req,res,next) => {
+        const error = validationResult(req)
+        if(!error.isEmpty()){
+            return errorResponse(res,"Validation failed",400,error.array())
+        }
+        next()
+    }
+]
+
+export const validateAssignTask = [
+    body("projectId")
+    .trim()
+    .notEmpty().withMessage("Project Id is required")
+    .isUUID(),
+
+    body("assignedToId")
+    .trim()
+    .notEmpty().withMessage("Assignee Id is required")
+    .isUUID(),
+
 
     (req,res,next) => {
         const error = validationResult(req)

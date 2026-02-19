@@ -1,4 +1,4 @@
-import { createProject, deleteProjectData, getProjectData, getProjectList, updateProjectData } from "../../services/projectServices.js"
+import { addMemberService, createProject, deleteProjectData, getMembersService, getProjectData, getProjectList, removeMemberService, updateMemberService, updateProjectData } from "../../services/projectServices.js"
 import { errorResponse, successResponse } from "../../utils/response.js"
 
 export const newProject = async (req, res) => {
@@ -26,7 +26,8 @@ export const getAllProjects = async (req, res) => {
 export const getProject = async (req, res) => {
     try {
         const projectId = req.params?.id
-        const projectData = await getProjectData(projectId);
+        const userId = req.user?.id
+        const projectData = await getProjectData({projectId,userId});
         return successResponse(res, projectData, "Project data fetched", 200)
     } catch (error) {
         return errorResponse(res, error.message, 500, error)
@@ -60,6 +61,55 @@ export const deleteProject = async (req, res) => {
 }
 
 
+//Member management controllers
+
+export const addMember = async(req,res) => {
+    try {
+        const projectId = req.params?.id
+        const callerUserId = req.user?.id
+        const {userId: targetUserId,role} = req.body
+        const member = await addMemberService({projectId,callerUserId,targetUserId,role})
+        return successResponse(res,member,"User successfully added to project",200)
+    } catch (error) {
+        return errorResponse(res,error.message,500,error)
+    }
+}
+
+export const getMembers = async(req,res)=>{
+    try {
+        const projectId = req.params?.id;
+        const userId = req.user?.id
+        const memberList = await getMembersService({projectId,userId})
+        return successResponse(res,memberList,"Members Fetched for the project")
+    } catch (error) {
+        return errorResponse(res,error.message,500,error)
+    }
+}
+
+export const updateMemberRole = async(req,res)=>{
+    try {
+        const projectId = req.params?.id
+        const targetUserId = req.params?.userId
+        const callerUserId = req.user?.id
+        const role = req.body?.role
+        const updatedMember = await updateMemberService({projectId,targetUserId,callerUserId,role})
+        return successResponse(res,updatedMember,"Member Role successfully updated",200)
+    } catch (error) {
+        return errorResponse(res,error.message,500,error)
+    }
+}
+
+export const deleteMember = async(req,res) => {
+    try {
+        const projectId = req.params?.id
+        const targetUserId = req.params?.userId;
+        const callerUserId = req.user?.id
+        const deletedMember = await removeMemberService({projectId,targetUserId,callerUserId})
+        return successResponse(res,deletedMember,"User successfully removed from the project",200)
+    } catch (error) {
+        return errorResponse(res,error.message,500,error)
+    }
+}
 // GET    /api/projects               - Get all projects for logged-in user
 // POST   /api/projects               - Create new project
 // GET    /api/projects/:id           - Get specific project with its tasks
