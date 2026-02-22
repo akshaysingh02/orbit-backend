@@ -71,7 +71,7 @@ export const validateUpdateSubtask = [
 
         const title = req.body?.title?.trim()
         const description = req.body?.description?.trim()
-        if(!title && !description){
+        if(title === undefined && !description){
             return errorResponse(res,"Validation failed",400,[
                 { msg: "At least one of title or description is required to perform an update" }
             ]);
