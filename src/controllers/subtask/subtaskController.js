@@ -8,7 +8,7 @@ export const createSubtask = async(req,res) => {
         const userId = req.user?.id
         const {title, description, isCompleted} = req.body
         const subtask = await createSubtaskService({title, description, isCompleted,taskId, userId})
-        return successResponse(res,subtask,"Subtask Created",200)
+        return successResponse(res,subtask,"Subtask Created",201)
     } catch (error) {
         return errorResponse(res,error.message,500,error)
     }
@@ -52,8 +52,8 @@ export const subtaskStatus = async(req,res) => {
     try {
         const subtaskId = req.params?.id
         const userId = req.user?.id
-        const status = req.body?.status
-        const toggeledSubtask = await subtaskToggleService({subtaskId,userId,status})
+        const isCompleted = req.body?.isCompleted
+        const toggeledSubtask = await subtaskToggleService({subtaskId,userId,isCompleted})
         return successResponse(res,toggeledSubtask,"Subtask status changed",200)
     } catch (error) {
         return errorResponse(res,error.message,500,error)

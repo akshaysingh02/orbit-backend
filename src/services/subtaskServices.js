@@ -64,8 +64,8 @@ export const updateSubtaskService = async({subtaskId,userId,title,description}) 
     }
 
     //check if user is allowed to update the subtask
-    const memebership = await getMembership(validSubtask.parentTask.projectId,userId)
-    if(!memebership || !["ADMIN","MEMBER"].includes(memebership.role)){
+    const membership = await getMembership(validSubtask.parentTask.projectId,userId)
+    if(!membership || !["ADMIN","MEMBER"].includes(membership.role)){
         throw new Error("Not authorized to update subtask")
     }
 
@@ -85,7 +85,8 @@ export const updateSubtaskService = async({subtaskId,userId,title,description}) 
 export const deleteSubtaskService = async({subtaskId,userId}) => {
     //check if subtask is valid 
     const validSubtask = await prisma.subTask.findUnique({
-        where: {id: subtaskId}
+        where: {id: subtaskId},
+        include:{parentTask:{select:{projectId: true}}}
     })
     if(!validSubtask){
         throw new Error("Subtask not valid")
@@ -103,15 +104,16 @@ export const deleteSubtaskService = async({subtaskId,userId}) => {
     return deletedSubtask
 }
 
-export const subtaskToggleService = async({subtaskId,userId,status}) => {
+export const subtaskToggleService = async({subtaskId,userId,isCompleted}) => {
     const validSubtask = await prisma.subTask.findUnique({
-        where: {id: subtaskId}
+        where: {id: subtaskId},
+        include: {parentTask: {select: {projectId: true}}}
     })
     if(!validSubtask){
         throw new Error("Subtask not valid")
     }
 
-    //check if user is authorized to delete subtask
+    //check if user is authorized to change subtask isCompleted status
     const membership = await getMembership(validSubtask?.parentTask?.projectId,userId)
     if(!membership || !["ADMIN","MEMBER"].includes(membership.role)){
         throw new Error("Not authorized to toggle subtask status")
@@ -119,7 +121,7 @@ export const subtaskToggleService = async({subtaskId,userId,status}) => {
 
     const updatedSubtask = await prisma.subTask.update({
         where: {id: subtaskId},
-        data:{isCompleted: status}
+        data:{isCompleted}
     })
 
     return updatedSubtask

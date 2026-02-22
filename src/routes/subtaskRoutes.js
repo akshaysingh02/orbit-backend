@@ -15,25 +15,3 @@ router.patch("/:id/status",validateUuidParam,validateSubtaskStatus,subtaskStatus
 
 
 export default router
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// GET    /api/tasks/:taskId/subtasks                 - Get all subtasks for a task
-// POST   /api/tasks/:taskId/subtasks                 - Create new subtask
-// GET    /api/subtasks/:id                           - Get specific subtask (not need as of now)
-// PUT    /api/subtasks/:id                           - Update subtask
-// DELETE /api/subtasks/:id                           - Delete subtask
-// PATCH  /api/subtasks/:id/status                    - Toggle subtask done status

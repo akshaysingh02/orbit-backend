@@ -28,15 +28,14 @@ export const validateCreateSubtask = [
     body("title")
     .trim()
     .optional()
-    .isLength({max: 50}).withMessage("title must be under 50 words"),
+    .isLength({max: 50}).withMessage("title must be under 50 characters"),
 
     body("description")
     .trim()
     .notEmpty().withMessage("Subtask description is required")
-    .isLength({max: 500}).withMessage("Subtask description must be under 500 words"),
+    .isLength({max: 500}).withMessage("Subtask description must be under 500 characters"),
 
     body("isCompleted")
-    .trim()
     .isBoolean().withMessage("Status must be boolean")
     .default(false),
 
@@ -55,12 +54,12 @@ export const validateUpdateSubtask = [
     body("title")
     .trim()
     .optional()
-    .isLength({max: 50}).withMessage("title must be under 50 words"),
+    .isLength({max: 50}).withMessage("title must be under 50 characters"),
 
     body("description")
     .trim()
     .optional()
-    .isLength({max: 500}).withMessage("Subtask description must be under 500 words"),
+    .isLength({max: 500}).withMessage("Subtask description must be under 500 characters"),
 
 
     (req,res,next) => {
@@ -69,13 +68,20 @@ export const validateUpdateSubtask = [
             return errorResponse(res,"Validation Failed",400,error.array())
         }
 
+        const title = req.body?.title?.trim()
+        const description = req.body?.description?.trim()
+        if(!title && !description){
+            return errorResponse(res,"Validation failed",400,[
+                { msg: "At least one of title or description is required to perform an update" }
+            ]);
+        }
+
         next();
     }
 ]
 
 export const validateSubtaskStatus = [
     body("isCompleted")
-    .trim()
     .isBoolean().withMessage("Status must be boolean")
     .notEmpty().withMessage("Status value is empty"),
 
