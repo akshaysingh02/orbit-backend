@@ -5,6 +5,7 @@ import userRoutes from "./src/routes/userRoutes.js";
 import projectRoutes from "./src/routes/projectRoutes.js"
 import taskRoutes from "./src/routes/taskRoutes.js"
 import subTaskRoutes from "./src/routes/subtaskRoutes.js"
+import commentRoutes from "./src/routes/commentRoutes.js"
 import { connectDb, disconnectDb } from "./src/config/db.js";
 
 
@@ -25,6 +26,7 @@ app.use("/users",userRoutes)
 app.use("/project",projectRoutes)
 app.use("/task",taskRoutes)
 app.use("/subtask",subTaskRoutes)
+app.use("/comments",commentRoutes)
 
 const server = app.listen(process.env.PORT_DEV,()=>{
     console.log(`Server is running at port ${process.env.PORT_DEV}`)
