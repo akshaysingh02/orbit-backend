@@ -83,6 +83,7 @@ export const validateUpdateSubtask = [
 
 export const validateSubtaskStatus = [
     body("isCompleted")
+    .toBoolean()
     .isBoolean().withMessage("Status must be boolean"),
 
 
