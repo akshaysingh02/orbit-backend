@@ -36,8 +36,9 @@ export const validateCreateSubtask = [
     .isLength({max: 500}).withMessage("Subtask description must be under 500 characters"),
 
     body("isCompleted")
-    .isBoolean().withMessage("Status must be boolean")
-    .default(false),
+    .default(false)
+    .toBoolean()
+    .isBoolean().withMessage("Status must be boolean"),
 
 
     (req,res,next) => {

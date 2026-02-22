@@ -57,7 +57,7 @@ export const updateSubtaskService = async({subtaskId,userId,title,description}) 
     //check if subtask exists
     const validSubtask = await prisma.subTask.findUnique({
         where: {id: subtaskId},
-        include:{parentTask: {select: {projectId}}}
+        include:{parentTask: {select: {projectId: true}}}
     })
     if(!validSubtask){
         throw new Error("Subtask not valid")
