@@ -70,7 +70,7 @@ export const updateSubtaskService = async({subtaskId,userId,title,description}) 
     }
 
     const subtaskObj = {
-        ...(title && {title}),
+        ...(title !== undefined && {title}),
         ...(description && {description})
     }
 

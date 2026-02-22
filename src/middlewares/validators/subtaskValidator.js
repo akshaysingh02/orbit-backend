@@ -83,8 +83,7 @@ export const validateUpdateSubtask = [
 
 export const validateSubtaskStatus = [
     body("isCompleted")
-    .isBoolean().withMessage("Status must be boolean")
-    .notEmpty().withMessage("Status value is empty"),
+    .isBoolean().withMessage("Status must be boolean"),
 
 
     (req,res,next) => {
@@ -96,12 +95,3 @@ export const validateSubtaskStatus = [
         next();
     }
 ]
-
-
-
-// router.get("/:taskId/subtasks",getSubtasks)
-// router.post("/:taskId/subtasks",createSubtask)
-// router.put("/:id",updateSubtask)
-// router.delete("/:id",deleteSubtask)
-// router.patch("/:id/status",subtaskStatus)
-
