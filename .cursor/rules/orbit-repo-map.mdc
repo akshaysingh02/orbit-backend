@@ -1,0 +1,66 @@
+---
+description: High-level map of orbit-backend for navigation (routes, layers, Prisma, Docker)
+alwaysApply: false
+---
+# orbit-backend — repo map
+
+## Stack
+
+- **Runtime**: Node.js (ESM: `"type": "module"`), **Express 5**
+- **DB**: **Prisma 7** + **`@prisma/adapter-neon`** (Neon serverless)
+- **Auth**: JWT (`jsonwebtoken`), `bcryptjs`, `src/middlewares/authMiddleware.js`
+- **Validation**: `express-validator` in `src/middlewares/validators/`
+
+## Entry & wiring
+
+- **HTTP entry**: `server.js` — loads `dotenv`, `connectDb()`, mounts routes, graceful shutdown + `unhandledRejection` / `uncaughtException`
+- **DB**: `src/config/db.js` — Prisma client + Neon adapter wiring
+
+## Route prefixes (`server.js`)
+
+| Prefix        | Router file              |
+|---------------|---------------------------|
+| `/auth`       | `src/routes/authRoutes.js` |
+| `/users`      | `src/routes/userRoutes.js` |
+| `/project`    | `src/routes/projectRoutes.js` |
+| `/task`       | `src/routes/taskRoutes.js` |
+| `/subtask`    | `src/routes/subtaskRoutes.js` |
+| `/comments`   | `src/routes/commentRoutes.js` |
+
+## Feature layout (repeat pattern)
+
+For each domain: **`routes/*Routes.js`** → **`controllers/<domain>/*Controller(s).js`** → **`services/*Services.js`**, with validators under **`src/middlewares/validators/*Validator.js`**.
+
+- **Auth**: `authRoutes` → `controllers/auth/` → `authServices.js`
+- **Users**: `userRoutes` → `controllers/user/` → `userServices.js`
+- **Projects** (incl. members): `projectRoutes` → `controllers/project/` → `projectServices.js` + `memberValidator.js`, `utils/membership.js`
+- **Tasks**: `taskRoutes` → `controllers/task/` → `taskServices.js`
+- **Subtasks**: `subtaskRoutes` → `controllers/subtask/` → `subtaskServices.js`
+- **Comments**: `commentRoutes` → `controllers/comment/` → `commentServices.js`
+
+## Shared utilities
+
+- `src/utils/response.js`, `src/utils/httpStatusCodes.js`, `src/utils/generateToken.js`
+- **Errors**: `src/errors/AppError.js` (extend as needed)
+
+## Prisma
+
+- **Schema**: `prisma/schema.prisma`
+- **Migrations**: `prisma/migrations/`
+- **Seed**: `prisma/seed.js` — npm script `seed:projects`
+
+## Ops / container
+
+- **Docker**: `Dockerfile`, `.dockerignore` — typical pattern includes `npm install` + `npx prisma generate`; app start via `node server.js`
+
+## Finding something quickly
+
+- **New endpoint**: start at matching `src/routes/*`, then paired controller + service.
+- **DB queries**: `src/services/*Services.js` and Prisma models in `schema.prisma`.
+- **Request validation**: `src/middlewares/validators/`.
+- **401/403**: `authMiddleware.js` + route wiring.
+
+## Agent behavior
+
+- Prefer reading files from this repo over asking the user to paste code or logs.
+- If unsure where logic lives, check the route file first, then controller, then service.
